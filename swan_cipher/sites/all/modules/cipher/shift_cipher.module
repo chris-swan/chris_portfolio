@@ -6,12 +6,12 @@ function shift_cipher_menu() {
     'title' => 'Shift Cipher!',
     'page callback' => 'drupal_get_form',
     'page arguments' => array('shift_cipher_form'),
-    'access callback' => TRUE
+    'access callback' => TRUE,
     'type' => MENU_NORMAL_ITEM,
 	);
 
   $items['shift_cipher_success_page'] = array(
-    'title' => 'Success! (Maybe?)',
+    'title' => 'Success!',
     'page callback' => 'shift_cipher_success',
     'access callback' => TRUE,
     'type' => MENU_CALLBACK,
@@ -30,13 +30,13 @@ function shift_cipher_form() {
   $form['direction'] = array(
     '#title' => 'Direction',
     '#type' => 'textfield',
-    '#description' => t('Enter left or right'),
-    //'#element_validate' => array('element_validate_direction'),
+    '#description' => t('Enter "left" or "right"'),
+    '#element_validate' => array('element_validate_direction'),
   );
   $form['phrase'] = array(
     '#title' => 'Phrase',
     '#type' => 'textfield',
-    '#description' => t('Enter Phrase to be shifted),
+    '#description' => t('Enter Phrase to be shifted'),
     //'#element_validate' => array(''),
   );
 
@@ -47,3 +47,36 @@ function shift_cipher_form() {
 
   return $form;
 }
+
+function element_validate_direction($element) {
+	
+	$directions = array('right', 'left');
+	$user_direction = strtolower($element['#value']);
+
+	if(!in_array($user_direction, $directions)) {
+		form_error($element, t('you must enter "right" or "left"'));
+	}
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
