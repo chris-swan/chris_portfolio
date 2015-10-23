@@ -37,7 +37,7 @@ function shift_cipher_form() {
     '#title' => 'Phrase',
     '#type' => 'textfield',
     '#description' => t('Enter Phrase to be shifted'),
-    //'#element_validate' => array(''),
+    '#element_validate' => array('element_validate_special_characters'),
   );
 
    $form['submit'] = array(
@@ -50,8 +50,8 @@ function shift_cipher_form() {
 
 function element_validate_positive($element) {
 	$user_number = $element['#value'];
-	if($user_number < 1) {
-		form_error($element, t('you must enter a number greater than zero'));
+	if($user_number < 1 || $user_number > 26) {
+		form_error($element, t('you must enter a number greater than zero & less than 27'));
 	}
 }
 
@@ -65,54 +65,67 @@ function element_validate_direction($element) {
 	}
 }
 
+function element_validate_special_characters($element) {
+	$user_phrase = strtolower($element['#value']);
+	$user_words = str_split($user_phrase);
+	$accepted = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h','i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z', '!', '.', ',', '?', ';', ':'];
+	foreach($user_words as $input)
+		if (!in_array($input, $accepted)) {
+			form_error($element, t('the characer: ' . $input . ' is not allowed, please try again.'));
+		}
+}
+
 function shift_cipher_form_submit($form, &$form_state) {
 
 	$shift_value = $form_state['values']['shift_value'];
 	$user_direction = strtolower($form_state['values']['direction']);
 	$user_phrase = strtolower($form_state['values']['phrase']);
-	$user_letters = explode($user_phrase);
-	$letters_array = ['a', 'b', 'c',
-	'd',
-	'e', 'f', 'g', 'h','i', 'j', 'k',
-	'l',
-		'm',
-		'n',
-		'o',
-		'p',
-		'q',
-		'r',
-		's',
-		't',
-		'u',
-		'v',
-		'w',
-		'x',
-		'y', 'z'];
+	$user_words = explode(" ", $user_phrase);
 
-	$punctuation_array = ['!', '.', ',', '?', ';', ':', '"',];
-	$result = '';
+	//Create an array of acceptable letters and punctiations to pull from:
+	$letters_array = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h','i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z'];
+	$punctuation_array = ['!', '.', ',', '?', ';', ':'];
+	//Create place to hold content:
+	$answer = '';
 	$shift_letters = array();
 	$shift_phrase = array();
+//run through each letter and adjust its position by adding or subtracting the 
+//shift value dependign on whether it is supposed to move right(+) or left(-) by the value given. 
+	foreach ($user_words as $word) {
+		$user_letters = str_split($word);
+		
+		foreach($user_letters as $letter) {
+			if(in_array($letter, $punctuation_array)) {
+				array_push($shift_letters, $letter);
+			} else {
+					$letter_key = array_search($letter, $letters_array);
 
-	foreach
+					if($shift_value === 'right') {
+						$key = $letter_key + $shift_value;
+					} else {
+						$key = $letter_key - $shift_value;
+					}
+					
+					if ($key < 0) {
+					$position = $key + 26;
+					} elseif ($key > 26) {
+						$position = $key - 26;
+					} else {
+						$position = $key;
+					}
+						
+				array_push($shift_letters, $letters_array[$position]);
+			}
+		}
+		$shift_word = implode('', $shift_letters);
+		array_push($shift_phrase, $shift_word);
 
+		$shift_letters = array();
+	}
 
+	$answer = implode(' ', $shift_phrase);
 
-// foreach($user_letters as $letter) {
-// 	if ($user_direction == 'right') {
-// 		$answer = $shift_value + $letters;
-// 	} 
-// }
-
-// if ($user_direction === "right") {
-// 	$answer = $user_phrase + $shift_value;
-// } else {
-// 	$answer = $user_phrase - $shift_value;
-// }
-
-	$answer = abs($shift_value + $user_phrase);
-
-	$_SESSION ['encoded'] = $answer;
+	$_SESSION ['shifted'] = $answer;
 	$form_state['redirect'] = 'shift_cipher_success_page';
 }
 
@@ -120,26 +133,3 @@ function shift_cipher_success() {
 	$answer = $_SESSION['encoded'];
 	return $answer;
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
