@@ -25,7 +25,7 @@ function shift_cipher_form() {
     '#title' => 'Shift Value',
     '#type' => 'textfield',
     '#description' => t('Enter value to be shifted'),
-    '#element_validate' => array('element_validate_number'),
+    '#element_validate' => array('element_validate_number', 'element_validate_positive'),
   );
   $form['direction'] = array(
     '#title' => 'Direction',
@@ -48,6 +48,13 @@ function shift_cipher_form() {
   return $form;
 }
 
+function element_validate_positive($element) {
+	$user_number = $element['#value'];
+	if($user_number < 1) {
+		form_error($element, t('you must enter a number greater than zero'));
+	}
+}
+
 function element_validate_direction($element) {
 	
 	$directions = array('right', 'left');
@@ -56,6 +63,27 @@ function element_validate_direction($element) {
 	if(!in_array($user_direction, $directions)) {
 		form_error($element, t('you must enter "right" or "left"'));
 	}
+}
+
+function shift_cipher_form_submit() {
+
+	$user_direction = $form_state['values']['direction'];
+	$shift_value = $form_state['values']['shift_value'];
+	$user_phrase = $form_state['values']['phrase'];
+
+	if (strtolower($user_direction) == 'right') {
+		$answer = $user_phrase + $shift_value;
+	} else {
+		$answer = $user_phrase - $shift_value;
+	}
+
+	$_SESSION ['answer'] = $answer;
+	$form_state['redirect'] = 'shift_cipher_success_page';
+}
+
+function shift_cipher_result() {
+	$translated = $_SESSION['answer'];
+	return $translated;
 }
 
 
