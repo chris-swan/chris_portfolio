@@ -65,25 +65,60 @@ function element_validate_direction($element) {
 	}
 }
 
-function shift_cipher_form_submit() {
+function shift_cipher_form_submit($form, &$form_state) {
 
-	$user_direction = $form_state['values']['direction'];
 	$shift_value = $form_state['values']['shift_value'];
-	$user_phrase = $form_state['values']['phrase'];
+	$user_direction = strtolower($form_state['values']['direction']);
+	$user_phrase = strtolower($form_state['values']['phrase']);
+	$user_letters = explode($user_phrase);
+	$letters_array = ['a', 'b', 'c',
+	'd',
+	'e', 'f', 'g', 'h','i', 'j', 'k',
+	'l',
+		'm',
+		'n',
+		'o',
+		'p',
+		'q',
+		'r',
+		's',
+		't',
+		'u',
+		'v',
+		'w',
+		'x',
+		'y', 'z'];
 
-	if (strtolower($user_direction) == 'right') {
-		$answer = $user_phrase + $shift_value;
-	} else {
-		$answer = $user_phrase - $shift_value;
-	}
+	$punctuation_array = ['!', '.', ',', '?', ';', ':', '"',];
+	$result = '';
+	$shift_letters = array();
+	$shift_phrase = array();
 
-	$_SESSION ['answer'] = $answer;
+	foreach
+
+
+
+// foreach($user_letters as $letter) {
+// 	if ($user_direction == 'right') {
+// 		$answer = $shift_value + $letters;
+// 	} 
+// }
+
+// if ($user_direction === "right") {
+// 	$answer = $user_phrase + $shift_value;
+// } else {
+// 	$answer = $user_phrase - $shift_value;
+// }
+
+	$answer = abs($shift_value + $user_phrase);
+
+	$_SESSION ['encoded'] = $answer;
 	$form_state['redirect'] = 'shift_cipher_success_page';
 }
 
-function shift_cipher_result() {
-	$translated = $_SESSION['answer'];
-	return $translated;
+function shift_cipher_success() {
+	$answer = $_SESSION['encoded'];
+	return $answer;
 }
 
 
