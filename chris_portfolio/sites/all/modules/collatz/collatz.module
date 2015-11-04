@@ -1,0 +1,61 @@
+<?php
+
+//Code not yet up and running - just got initially set up,
+//main challange is yet to be tackled.
+
+
+function collatz_menu() {
+  $items = array();
+  $items['collatz'] = array(
+    'title' =>'Collatz Sequence',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('collatz_form'),
+    'access callback' => TRUE,
+    'type' => MENU_NORMAL_ITEM,
+  );
+
+  $items['collatz_success_page'] = array(
+    'title' => 'Success!',
+    'page callback' => 'collatz_success',
+    'access callback' => TRUE,
+    'type' => MENU_CALLBACK,
+  );
+  return $items;
+}
+
+function collatz_form() {
+
+  $form['number'] = array(
+    '#title' => 'Number',
+    '#type' => 'textfield',
+    '#description' => t('Please enter a positive number'),
+    '#required' => TRUE,
+  );
+
+  $form['submit'] = array(
+    '#type' => 'submit',
+    '#value' => 'Enter the number',
+  );
+  return $form;
+}
+
+function collatz_form_submit($form, &$form_state) {
+  $user_input = $form_state['values']['number'];
+
+  $_SESSION['collatz_output'] = get_collatz($user_input);
+
+  $form_state['redirect'] = 'collatz_success_page';
+}
+
+function get_collatz($user_input) {
+  //the code to make the magic happen
+  $collatz_number = $user_input;
+
+  return $collatz_number;
+
+}
+
+function collatz_success() {
+  $collatz_sequence = $_SESSION['collatz_output'];
+  return $collatz_sequence;
+  }

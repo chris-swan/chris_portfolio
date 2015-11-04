@@ -1,0 +1,7 @@
+name = Collatz Sequence
+description = We start with a number, and if it is even, divide by 2 to get the next number. If it is odd, we multiply by 3 and then add 1 to get the next number.
+package = Epicodus practice
+core = 7.x
+files[] = collatz.module
+files[] = collatz.test
+dependencies[] = simpletest

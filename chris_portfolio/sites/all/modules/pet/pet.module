@@ -1,0 +1,25 @@
+<?php
+
+function pet_menu()
+{
+	$items = array();
+	$items['pet'] = array(
+		'title' => 'My Favorite Pet',
+		'page callback' => 'pet_display',
+		'access callback' => TRUE,
+		'type' => MENU_NORMAL_ITEM,
+ 		);
+	return $items;
+}
+
+function pet_display()
+{
+	return '
+
+	<ul>
+		<li>Walter the Moulting Chicken</li>
+		<li><img src="../walter.JPG"></li>
+
+	</ul>
+	';
+}
