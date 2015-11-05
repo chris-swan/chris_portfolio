@@ -1,1 +1,24 @@
-collatz.test
+<?php
+
+class CollatzTestCase extends DrupalUnitTestCase
+{
+	public static function getInfo()
+	{
+		return array(
+			'name' => 'Collatz Tests',
+			'description' => 'test that collatz returns the correct number',
+			'group' => 'Epicodus Examples Tests',
+			);
+	}	
+
+	function testCollatzTest()
+	{
+		$description = '4 is equal to 4';
+		$user_input = 4;
+
+		$result = get_collatz($user_input);
+
+		$expected_output = 4;
+		$this->assertEqual($result, $expected_output, $description);
+	}	
+}

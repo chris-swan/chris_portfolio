@@ -48,7 +48,14 @@ function collatz_form_submit($form, &$form_state) {
 }
 
 function get_collatz($user_input) {
-  //the code to make the magic happen
+  //the code to make the magic happen.
+
+// for($user_input != 1;) { 
+// if ($user_input % 2 = 0 ) {
+//     $user_input/
+//   }
+  
+// }
   $collatz_number = $user_input;
 
   return $collatz_number;
